@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate sheet-by-sheet page ranges for booklet and multi-page-per-sheet printing.">
+    <title>Booklet Pages Counter</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="brand-link" aria-label="Booklet Pages Counter Home">
+                <svg class="brand-logo" width="44" height="44" viewBox="0 0 64 64" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                    <rect x="4" y="4" width="56" height="56" rx="14" fill="#EEF2FF" />
+                    <path
+                        d="M14 21C14 19.8954 14.8954 19 16 19H48C49.1046 19 50 19.8954 50 21V45C50 46.1046 49.1046 47 48 47H16C14.8954 47 14 46.1046 14 45V21Z"
+                        fill="#4F46E5" />
+                    <path d="M17 17C22.5 17 28 18.5 32 21V44C28 41.5 22.5 40 17 40V17Z" fill="#FFFFFF" stroke="#C7D2FE"
+                        stroke-width="1.5" stroke-linejoin="round" />
+                    <path d="M47 17C41.5 17 36 18.5 32 21V44C36 41.5 41.5 40 47 40V17Z" fill="#F8FAFC" stroke="#C7D2FE"
+                        stroke-width="1.5" stroke-linejoin="round" />
+                    <line x1="32" y1="21" x2="32" y2="44" stroke="#818CF8" stroke-width="1.5" stroke-linecap="round" />
+                    <line x1="20.5" y1="24" x2="28" y2="25.5" stroke="#CBD5E1" stroke-width="1.8"
+                        stroke-linecap="round" />
+                    <line x1="20.5" y1="29" x2="28" y2="30.5" stroke="#CBD5E1" stroke-width="1.8"
+                        stroke-linecap="round" />
+                    <line x1="20.5" y1="34" x2="26" y2="35" stroke="#CBD5E1" stroke-width="1.8"
+                        stroke-linecap="round" />
+                    <line x1="43.5" y1="24" x2="36" y2="25.5" stroke="#CBD5E1" stroke-width="1.8"
+                        stroke-linecap="round" />
+                    <line x1="43.5" y1="29" x2="36" y2="30.5" stroke="#CBD5E1" stroke-width="1.8"
+                        stroke-linecap="round" />
+                </svg>
+                <div class="brand-text">
+                    <span class="brand-title">Booklet Pages</span>
+                    <span class="brand-subtitle">Counter</span>
+                </div>
+            </a>
+
+            <button type="button" id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode"
+                title="Toggle dark mode">
+                <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+                <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <section class="card input-card" aria-labelledby="calc-heading">
+            <div class="card-header">
+                <h1 id="calc-heading" class="card-title">Sheet Page Calculator</h1>
+                <p class="card-description">Split a document into print-ready sheet ranges for booklet or multi-up
+                    printing.</p>
+            </div>
+
+            <form id="calc-form" novalidate>
+                <div class="form-row">
+                    <div class="field-group">
+                        <label for="page-count" class="field-label">Total Pages</label>
+                        <div class="input-action-group">
+                            <input type="number" id="page-count" name="pageCount" placeholder="e.g. 24"
+                                inputmode="numeric" min="1" max="10000" step="1" autocomplete="off"
+                                aria-describedby="input-error">
+                            <button type="submit" id="calculate-btn" class="btn btn-primary" disabled>
+                                Calculate
+                            </button>
+                        </div>
+                        <p id="input-error" class="field-error" role="alert" hidden></p>
+                    </div>
+                </div>
+
+                <div class="preset-group">
+                    <span class="field-label">Pages per Sheet</span>
+                    <div class="segmented-control" role="group" aria-label="Pages per sheet">
+                        <button type="button" class="segment-btn" data-pages="2">2</button>
+                        <button type="button" class="segment-btn active" data-pages="4" aria-pressed="true">4
+                            (Booklet)</button>
+                        <button type="button" class="segment-btn" data-pages="8">8</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <section id="results-section" class="card results-card" aria-labelledby="results-heading" hidden>
+            <div class="stats-grid" aria-label="Summary">
+                <div class="stat-item">
+                    <span class="stat-label">Total Sheets</span>
+                    <span id="stat-sheets" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Pages</span>
+                    <span id="stat-pages" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Last Sheet</span>
+                    <span id="stat-last-sheet" class="stat-value">-</span>
+                </div>
+            </div>
+
+            <div class="results-toolbar">
+                <h2 id="results-heading" class="results-title">Sheet Order</h2>
+                <div class="toolbar-actions">
+                    <button type="button" id="copy-range-btn" class="btn btn-secondary"
+                        title="Copy comma-separated ranges for printer Custom Pages">
+                        Copy Print Range
+                    </button>
+                    <button type="button" id="copy-column-btn" class="btn btn-secondary"
+                        title="Copy page ranges vertically">
+                        Copy Column
+                    </button>
+                    <button type="button" id="clear-btn" class="btn btn-ghost" title="Clear results">
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <div id="toast-banner" class="toast-banner" role="status" aria-live="polite" hidden></div>
+
+            <div class="table-wrapper">
+                <table class="results-table">
+                    <thead id="sheets-head"></thead>
+                    <tbody id="pages-body"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
